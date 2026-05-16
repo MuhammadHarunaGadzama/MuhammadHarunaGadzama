@@ -1,585 +1,85 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
 
-export default function ExamPage() {
-  const router = useRouter();
+export default function CBTExam() {
 
-  // =========================
-  // EXAM SETTINGS
-  // =========================
-  const EXAM_DURATION = 60 * 60; // 1 hour
-  const MAX_WARNINGS = 3;
-
-  // =========================
-  // TIMER + STATES
-  // =========================
-  const [timeLeft, setTimeLeft] = useState(EXAM_DURATION);
-  const [warnings, setWarnings] = useState(0);
-  const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState({});
-
-  // =========================
-  // QUESTIONS
-  // =========================
+  // ================= QUESTIONS =================
   const questions = [
-{
-id: 1,
-question: "If z = (1+i)/(1-i), find z^20",
-options: ["1", "-1", "i", "-i", "0", "2^10"],
-answer: "1"
-},
+    { q: "1. If A={1,2} and B={2,3}, A∪B=?", A:"{1,2,3}", B:"{2}", C:"{1,3}", ans:"A" },
+    { q: "2. A∩B for A={1,2,3}, B={2,4}=?", A:"{1}", B:"{2}", C:"{1,2,3,4}", ans:"B" },
+    { q: "3. Empty set symbol?", A:"{}", B:"Ø", C:"U", ans:"B" },
+    { q: "4. Number of subsets of {a,b}?", A:"2", B:"4", C:"6", ans:"B" },
+    { q: "5. If A⊆B and B⊆A then?", A:"A=B", B:"A≠B", C:"A∩B", ans:"A" },
+
+    { q: "6. (a+b)^2=?", A:"a²+b²", B:"a²+2ab+b²", C:"a²-ab+b²", ans:"B" },
+    { q: "7. Coefficient of x in (1+x)^3?", A:"1", B:"2", C:"3", ans:"C" },
+    { q: "8. Number of terms in (a+b)^5?", A:"5", B:"6", C:"7", ans:"B" },
+    { q: "9. (x-y)^2=?", A:"x²-2xy+y²", B:"x²+y²", C:"x²+2xy+y²", ans:"A" },
+    { q: "10. Sum of coefficients of (a+b)^4?", A:"8", B:"16", C:"4", ans:"B" },
+
+    { q: "11. First step in induction?", A:"Assume", B:"Verify n=1", C:"Conclude", ans:"B" },
+    { q: "12. Induction proves?", A:"Integers", B:"Fractions", C:"Decimals", ans:"A" },
+    { q: "13. Assume P(k) means?", A:"True for k", B:"False", C:"Unknown", ans:"A" },
+    { q: "14. Then prove?", A:"P(k-1)", B:"P(k+1)", C:"P(0)", ans:"B" },
+    { q: "15. Base case starts at?", A:"0 or 1", B:"10", C:"100", ans:"A" },
+
+    { q: "16. i²=?", A:"1", B:"-1", C:"0", ans:"B" },
+    { q: "17. i⁴=?", A:"1", B:"-1", C:"i", ans:"A" },
+    { q: "18. Complex number form?", A:"a+b", B:"a+bi", C:"ab", ans:"B" },
+    { q: "19. Conjugate of 2+3i?", A:"2-3i", B:"-2+3i", C:"3-2i", ans:"A" },
+    { q: "20. |i|=?", A:"0", B:"1", C:"2", ans:"B" },
+
+    { q: "21. sin²θ+cos²θ=?", A:"0", B:"1", C:"2", ans:"B" },
+    { q: "22. tanθ=?", A:"sin/cos", B:"cos/sin", C:"sin+cos", ans:"A" },
+    { q: "23. sin90°=?", A:"0", B:"1", C:"-1", ans:"B" },
+    { q: "24. cos180°=?", A:"1", B:"0", C:"-1", ans:"C" },
+    { q: "25. tan45°=?", A:"1", B:"0", C:"2", ans:"A" },
+
+    { q: "26. π radians=?", A:"90°", B:"180°", C:"360°", ans:"B" },
+    { q: "27. 2π radians=?", A:"180°", B:"360°", C:"90°", ans:"B" },
+    { q: "28. 90° in radians?", A:"π/2", B:"π", C:"2π", ans:"A" },
+    { q: "29. π/4 in degrees?", A:"30°", B:"45°", C:"60°", ans:"B" },
+    { q: "30. π/6 in degrees?", A:"30°", B:"45°", C:"60°", ans:"A" },
+
+    { q: "31. nth term of AP?", A:"a+(n-1)d", B:"ar^n", C:"n²", ans:"A" },
+    { q: "32. GP common ratio?", A:"d", B:"r", C:"n", ans:"B" },
+    { q: "33. Sum of AP?", A:"n/2[2a+(n-1)d]", B:"n²", C:"ar", ans:"A" },
+    { q: "34. Infinite GP converges when?", A:"|r|<1", B:"|r|>1", C:"r=1", ans:"A" },
+    { q: "35. Series means?", A:"Sum", B:"Difference", C:"Product", ans:"A" },
+
+    { q: "36. sin0°=?", A:"0", B:"1", C:"-1", ans:"A" },
+    { q: "37. cos0°=?", A:"1", B:"0", C:"-1", ans:"A" },
+    { q: "38. tan90°=?", A:"1", B:"∞", C:"0", ans:"B" },
+    { q: "39. secθ=?", A:"1/cosθ", B:"1/sinθ", C:"sin/cos", ans:"A" },
+    { q: "40. cosecθ=?", A:"1/cosθ", B:"1/sinθ", C:"cos/sin", ans:"B" },
+
+    { q: "41. i³=?", A:"i", B:"-i", C:"1", ans:"B" },
+    { q: "42. Real part of 3+2i?", A:"3", B:"2", C:"i", ans:"A" },
+    { q: "43. Imaginary part of 3+2i?", A:"3", B:"2", C:"i", ans:"B" },
+    { q: "44. Product of conjugates is?", A:"Imaginary", B:"Real", C:"Zero", ans:"B" },
+    { q: "45. |3+4i|=?", A:"5", B:"7", C:"1", ans:"A" },
+
+    { q: "46. Degree to radian formula?", A:"×π/180", B:"×180/π", C:"×360", ans:"A" },
+    { q: "47. π/3 in degrees?", A:"30°", B:"45°", C:"60°", ans:"C" },
+    { q: "48. π/2 in degrees?", A:"90°", B:"180°", C:"45°", ans:"A" },
+    { q: "49. Sequence means?", A:"Ordered list", B:"Set", C:"Equation", ans:"A" },
+    { q: "50. Common difference in AP?", A:"r", B:"d", C:"n", ans:"B" },
+  ];
+
+  // ================= STATES =================
+  const [current, setCurrent] = useState(0);
+  const [answers, setAnswers] = useState({});
+  const [submitted, setSubmitted] = useState(false);
+
+  // ================= 40 MINUTES =================
+  const [timeLeft, setTimeLeft] = useState(2400);
 
-{
-id: 2,
-question: "Convert 315° to radians",
-options: ["5π/6", "7π/4", "3π/2", "11π/6", "9π/4", "5π/4"],
-answer: "7π/4"
-},
-
-{
-id: 3,
-question: "Evaluate ΣC(10,k) from k=0 to 10",
-options: ["512", "1024", "2048", "4096", "256", "1000"],
-answer: "1024"
-},
-
-{
-id: 4,
-question: "If z² + 2z + 5 = 0, find |z|",
-options: ["1", "2", "√5", "5", "2√5", "4"],
-answer: "√5"
-},
-
-{
-id: 5,
-question: "Solve 2sin²x − 3sinx + 1 = 0",
-options: [
-"30°,150°,90°",
-"45°,135°",
-"90°,270°",
-"0°,180°",
-"60°,120°",
-"30°,60°"
-],
-answer: "30°,150°,90°"
-},
-
-{
-id: 6,
-question: "Find the sum of GP: 2 + 6 + 18 + ... up to 8 terms",
-options: ["6560", "6500", "6600", "6561", "6550", "6520"],
-answer: "6560"
-},
-
-{
-id: 7,
-question: "Evaluate 1³ + 2³ + ... + 20³",
-options: ["42025", "44100", "40000", "40425", "42000", "44125"],
-answer: "44100"
-},
-
-{
-id: 8,
-question: "If z = cosθ + isinθ and θ = 2π/7, evaluate z⁷",
-options: ["1", "-1", "i", "-i", "7", "0"],
-answer: "1"
-},
-
-{
-id: 9,
-question: "Find the coefficient of x⁴ in (2x−3)⁷",
-options: ["-15120", "15120", "-7560", "7560", "5040", "-5040"],
-answer: "-15120"
-},
-
-{
-id: 10,
-question: "How many subsets does a set with 8 elements have?",
-options: ["64", "128", "256", "512", "1024", "16"],
-answer: "256"
-},
-
-{
-id: 11,
-question: "Find sin²45° + cos²45°",
-options: ["0", "1/2", "1", "2", "√2", "√3"],
-answer: "1"
-},
-
-{
-id: 12,
-question: "Find the modulus of 3 + 4i",
-options: ["3", "4", "5", "6", "7", "8"],
-answer: "5"
-},
-
-{
-id: 13,
-question: "Convert π/3 radians to degrees",
-options: ["30°", "45°", "60°", "90°", "120°", "180°"],
-answer: "60°"
-},
-
-{
-id: 14,
-question: "Find the 5th term of the sequence 2, 6, 18, 54...",
-options: ["108", "162", "216", "324", "486", "96"],
-answer: "162"
-},
-
-{
-id: 15,
-question: "Evaluate i^15",
-options: ["1", "-1", "i", "-i", "15", "0"],
-answer: "-i"
-},
-
-{
-id: 16,
-question: "Find the radius if arc length = 14π and angle = 7π/6",
-options: ["10", "12", "14", "16", "18", "20"],
-answer: "12"
-},
-
-{
-id: 17,
-question: "Solve tan²x = 3 for 0 ≤ x < 2π",
-options: [
-"π/3,2π/3,4π/3,5π/3",
-"π/4,5π/4",
-"π/6,11π/6",
-"π/2,3π/2",
-"π/3,4π/3",
-"π/6,7π/6"
-],
-answer: "π/3,2π/3,4π/3,5π/3"
-},
-
-{
-id: 18,
-question: "Find Σn from n=1 to 100",
-options: ["5000", "5050", "5100", "5150", "4950", "4900"],
-answer: "5050"
-},
-
-{
-id: 19,
-question: "Find Σn² from n=1 to 10",
-options: ["365", "375", "385", "395", "405", "415"],
-answer: "385"
-},
-
-{
-id: 20,
-question: "Find the common ratio of 3, 9, 27, 81",
-options: ["2", "3", "4", "5", "6", "9"],
-answer: "3"
-},
-
-{
-id: 21,
-question: "Find cos60°",
-options: ["0", "1/2", "1", "√2/2", "√3/2", "2"],
-answer: "1/2"
-},
-
-{
-id: 22,
-question: "Evaluate (1+i)^8",
-options: ["16", "-16", "8", "-8", "1", "0"],
-answer: "16"
-},
-
-{
-id: 23,
-question: "Find the sum to infinity of 8 + 4 + 2 + 1 + ...",
-options: ["8", "12", "14", "16", "18", "20"],
-answer: "16"
-},
-
-{
-id: 24,
-question: "Find the argument of i",
-options: ["0", "π/6", "π/4", "π/2", "π", "2π"],
-answer: "π/2"
-},
-
-{
-id: 25,
-question: "How many proper subsets does a set of 5 elements have?",
-options: ["16", "31", "32", "30", "25", "15"],
-answer: "31"
-},
-
-{
-id: 26,
-question: "Find the coefficient of x² in (x+1)^5",
-options: ["5", "10", "15", "20", "25", "30"],
-answer: "10"
-},
-
-{
-id: 27,
-question: "Find sin30°",
-options: ["0", "1/2", "1", "√2/2", "√3/2", "2"],
-answer: "1/2"
-},
-
-{
-id: 28,
-question: "Find cos²x + sin²x",
-options: ["0", "1", "2", "x", "sinx", "cosx"],
-answer: "1"
-},
-
-{
-id: 29,
-question: "Find the 10th term of AP: 3,7,11,15...",
-options: ["35", "37", "39", "41", "43", "45"],
-answer: "39"
-},
-
-{
-id: 30,
-question: "Evaluate i^24",
-options: ["1", "-1", "i", "-i", "24", "0"],
-answer: "1"
-},
-
-{
-id: 31,
-question: "Find n(C)r when n=5 and r=2",
-options: ["5", "10", "15", "20", "25", "30"],
-answer: "10"
-},
-
-{
-id: 32,
-question: "Find tan45°",
-options: ["0", "1/2", "1", "√2", "√3", "2"],
-answer: "1"
-},
-
-{
-id: 33,
-question: "Find the sum of first 20 natural numbers",
-options: ["190", "200", "210", "220", "230", "240"],
-answer: "210"
-},
-
-{
-id: 34,
-question: "Convert 2π radians to degrees",
-options: ["90°", "180°", "270°", "360°", "720°", "540°"],
-answer: "360°"
-},
-
-{
-id: 35,
-question: "Find the modulus of 1−i",
-options: ["1", "√2", "2", "√3", "3", "4"],
-answer: "√2"
-},
-
-{
-id: 36,
-question: "Find the sum of GP 1+2+4+8+16",
-options: ["15", "31", "32", "30", "63", "64"],
-answer: "31"
-},
-
-{
-id: 37,
-question: "Evaluate (2+i)(2−i)",
-options: ["3", "4", "5", "6", "7", "8"],
-answer: "5"
-},
-
-{
-id: 38,
-question: "Find the value of sec60°",
-options: ["1", "2", "1/2", "√2", "√3", "4"],
-answer: "2"
-},
-
-{
-id: 39,
-question: "Find the 6th term in expansion of (x+y)^10",
-options: ["210x⁵y⁵", "252x⁵y⁵", "120x⁵y⁵", "300x⁵y⁵", "150x⁵y⁵", "400x⁵y⁵"],
-answer: "252x⁵y⁵"
-},
-
-{
-id: 40,
-question: "Find Σ2n from n=1 to 10",
-options: ["100", "110", "120", "90", "80", "70"],
-answer: "110"
-},
-
-// CONTINUE TO 70
-
-{
-id: 41,
-question: "Find cot45°",
-options: ["0", "1", "2", "√2", "√3", "4"],
-answer: "1"
-},
-
-{
-id: 42,
-question: "Evaluate i^100",
-options: ["1", "-1", "i", "-i", "100", "0"],
-answer: "1"
-},
-
-{
-id: 43,
-question: "Find the number of subsets of a set with 6 elements",
-options: ["16", "32", "64", "128", "256", "512"],
-answer: "64"
-},
-
-{
-id: 44,
-question: "Find the coefficient of x³ in (x+2)^5",
-options: ["20", "40", "80", "160", "10", "5"],
-answer: "40"
-},
-
-{
-id: 45,
-question: "Find cos0°",
-options: ["0", "1", "-1", "1/2", "√2", "2"],
-answer: "1"
-},
-
-{
-id: 46,
-question: "Find sin90°",
-options: ["0", "1/2", "1", "√2", "√3", "2"],
-answer: "1"
-},
-
-{
-id: 47,
-question: "Find tan60°",
-options: ["1", "√2", "√3", "2", "3", "4"],
-answer: "√3"
-},
-
-{
-id: 48,
-question: "Find the 7th term of AP 5,8,11,14...",
-options: ["20", "21", "22", "23", "24", "25"],
-answer: "23"
-},
-
-{
-id: 49,
-question: "Evaluate (1-i)(1+i)",
-options: ["0", "1", "2", "3", "4", "5"],
-answer: "2"
-},
-
-{
-id: 50,
-question: "Find the sum of first 50 natural numbers",
-options: ["1250", "1275", "1300", "1325", "1350", "1375"],
-answer: "1275"
-},
-
-{
-id: 51,
-question: "Convert π/2 radians to degrees",
-options: ["30°", "45°", "60°", "90°", "180°", "270°"],
-answer: "90°"
-},
-
-{
-id: 52,
-question: "Find |5i|",
-options: ["1", "2", "3", "4", "5", "25"],
-answer: "5"
-},
-
-{
-id: 53,
-question: "Find the common difference of 2,5,8,11",
-options: ["1", "2", "3", "4", "5", "6"],
-answer: "3"
-},
-
-{
-id: 54,
-question: "Evaluate i²",
-options: ["1", "-1", "i", "-i", "2", "0"],
-answer: "-1"
-},
-
-{
-id: 55,
-question: "Find sin60°",
-options: ["1", "√2", "√3/2", "1/2", "2", "3"],
-answer: "√3/2"
-},
-
-{
-id: 56,
-question: "Find the sum to infinity of 3 + 1.5 + 0.75 + ...",
-options: ["4", "5", "6", "7", "8", "9"],
-answer: "6"
-},
-
-{
-id: 57,
-question: "Find the coefficient of x in (x+1)^4",
-options: ["1", "2", "3", "4", "5", "6"],
-answer: "4"
-},
-
-{
-id: 58,
-question: "Find cos90°",
-options: ["0", "1", "-1", "1/2", "√2", "2"],
-answer: "0"
-},
-
-{
-id: 59,
-question: "Evaluate (3+i)(3−i)",
-options: ["8", "9", "10", "11", "12", "13"],
-answer: "10"
-},
-
-{
-id: 60,
-question: "Find tan30°",
-options: ["1/√3", "√3", "1", "0", "2", "3"],
-answer: "1/√3"
-},
-
-{
-id: 61,
-question: "Find the 4th term of GP 3,6,12,24...",
-options: ["12", "24", "36", "48", "60", "72"],
-answer: "24"
-},
-
-{
-id: 62,
-question: "Evaluate i^8",
-options: ["1", "-1", "i", "-i", "8", "0"],
-answer: "1"
-},
-
-{
-id: 63,
-question: "Find the sum of first 10 even numbers",
-options: ["100", "110", "120", "90", "80", "70"],
-answer: "110"
-},
-
-{
-id: 64,
-question: "Find sec45°",
-options: ["1", "√2", "2", "√3", "3", "4"],
-answer: "√2"
-},
-
-{
-id: 65,
-question: "Find the number of subsets of a set with 10 elements",
-options: ["256", "512", "1024", "2048", "4096", "100"],
-answer: "1024"
-},
-
-{
-id: 66,
-question: "Find cos120°",
-options: ["1/2", "-1/2", "√3/2", "-√3/2", "1", "-1"],
-answer: "-1/2"
-},
-
-{
-id: 67,
-question: "Evaluate (2+i)^2",
-options: ["3+4i", "4+4i", "5+4i", "6+4i", "7+4i", "8+4i"],
-answer: "3+4i"
-},
-
-{
-id: 68,
-question: "Find the coefficient of x² in (x−1)^4",
-options: ["4", "6", "8", "10", "12", "14"],
-answer: "6"
-},
-
-{
-id: 69,
-question: "Find sin45°",
-options: ["1/2", "√2/2", "√3/2", "1", "0", "2"],
-answer: "√2/2"
-},
-
-{
-id: 70,
-question: "Find the sum of first 100 odd numbers",
-options: ["1000", "5000", "10000", "5050", "9999", "10100"],
-answer: "10000"
-}
-];
-  // =========================
-  // FULLSCREEN MODE
-  // =========================
-  const enterFullScreen = () => {
-    const elem = document.documentElement;
-
-    if (elem.requestFullscreen) {
-      elem.requestFullscreen();
-    }
-  };
-
-  const exitHandler = () => {
-    if (!document.fullscreenElement) {
-      handleViolation("Exited full screen");
-    }
-  };
-
-  // =========================
-  // TAB SWITCH DETECTION
-  // =========================
-  const handleVisibilityChange = () => {
-    if (document.hidden) {
-      handleViolation("Tab switching detected");
-    }
-  };
-
-  // =========================
-  // VIOLATION SYSTEM
-  // =========================
-  const handleViolation = (reason) => {
-    alert(`Warning: ${reason}`);
-
-    setWarnings((prev) => {
-      const newWarnings = prev + 1;
-
-      if (newWarnings >= MAX_WARNINGS) {
-        alert("Too many violations. Exam submitted.");
-        submitExam();
-      }
-
-      return newWarnings;
-    });
-  };
-
-  // =========================
-  // TIMER
-  // =========================
   useEffect(() => {
+    if (submitted) return;
+
     if (timeLeft <= 0) {
-      submitExam();
+      setSubmitted(true);
       return;
     }
 
@@ -588,256 +88,204 @@ answer: "10000"
     }, 1000);
 
     return () => clearInterval(timer);
-  }, [timeLeft]);
+  }, [timeLeft, submitted]);
 
-  // =========================
-  // LOCK MODE INIT
-  // =========================
+  // ================= AUTO LOGOUT ONLY WHEN MINIMIZED =================
   useEffect(() => {
-    enterFullScreen();
+    const handleVisibility = () => {
+      if (document.hidden) {
+        alert("Exam closed because you minimized/switched tab.");
+        window.location.reload();
+      }
+    };
 
-    document.addEventListener("fullscreenchange", exitHandler);
-    document.addEventListener("visibilitychange", handleVisibilityChange);
+    document.addEventListener("visibilitychange", handleVisibility);
 
     return () => {
-      document.removeEventListener("fullscreenchange", exitHandler);
-      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      document.removeEventListener("visibilitychange", handleVisibility);
     };
   }, []);
 
-  // =========================
-  // FORMAT TIME
-  // =========================
-  const formatTime = (s) => {
-    const m = Math.floor(s / 60);
-    const sec = s % 60;
+  // ================= TIME =================
+  const minutes = Math.floor(timeLeft / 60);
+  const seconds = timeLeft % 60;
 
-    return `${m}:${sec < 10 ? "0" : ""}${sec}`;
-  };
-
-  // =========================
-  // SCORING
-  // =========================
-  const calculateScore = () => {
-    let score = 0;
-
-    questions.forEach((q, index) => {
-      if (answers[index] === q.ans) {
-        score++;
-      }
+  // ================= ANSWERS =================
+  const handleAnswer = (option) => {
+    setAnswers({
+      ...answers,
+      [current]: option,
     });
-
-    return {
-      score,
-      total: questions.length,
-    };
   };
 
-  // =========================
-  // SUBMIT EXAM
-  // =========================
-  const submitExam = () => {
-    const result = calculateScore();
-
-    localStorage.setItem("score", result.score);
-    localStorage.setItem("total", result.total);
-
-    router.push("/result");
-  };
-
-  // =========================
-  // NAVIGATION
-  // =========================
-  const nextQuestion = () => {
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
-    }
-  };
-
-  const prevQuestion = () => {
-    if (currentQuestion > 0) {
-      setCurrentQuestion(currentQuestion - 1);
-    }
-  };
+  // ================= SCORE =================
+  const score = questions.reduce((acc, q, index) => {
+    return answers[index] === q.ans ? acc + 1 : acc;
+  }, 0);
 
   return (
-    <div style={{ padding: "20px", maxWidth: "900px", margin: "auto" }}>
-      {/* TIMER */}
-      <div
-        style={{
-          position: "fixed",
-          top: 10,
-          right: 10,
-          background: "black",
-          color: "white",
-          padding: "10px",
-          borderRadius: "8px",
-          zIndex: 999,
-        }}
-      >
-        ⏱ {formatTime(timeLeft)}
+    <div className="min-h-screen bg-gray-100 p-4">
+
+      {/* HEADER */}
+      <div className="bg-blue-700 text-white p-4 rounded-xl flex justify-between items-center">
+        <h1 className="text-2xl font-bold">
+          Mathematics CBT Examination
+        </h1>
+
+        <div className="bg-black px-5 py-2 rounded-lg text-xl font-bold">
+          {minutes}:{seconds.toString().padStart(2, "0")}
+        </div>
       </div>
 
-      {/* WARNINGS */}
-      <div
-        style={{
-          position: "fixed",
-          top: 10,
-          left: 10,
-          background: "red",
-          color: "white",
-          padding: "10px",
-          borderRadius: "8px",
-          zIndex: 999,
-        }}
-      >
-        ⚠ Warnings: {warnings}/{MAX_WARNINGS}
-      </div>
+      {/* MAIN */}
+      <div className="grid md:grid-cols-4 gap-5 mt-5">
 
-      <h1>CBT EXAM SYSTEM</h1>
+        {/* QUESTION AREA */}
+        <div className="md:col-span-3 bg-white p-6 rounded-2xl shadow-lg">
 
-      <p style={{ color: "red" }}>
-        Do not switch tabs or exit fullscreen mode.
-      </p>
+          {!submitted ? (
+            <>
+              <div className="flex justify-between mb-5">
+                <h2 className="text-xl font-bold">
+                  Question {current + 1} of {questions.length}
+                </h2>
 
-      {/* QUESTION PALETTE */}
-      <div
-        style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "10px",
-          marginTop: "20px",
-          marginBottom: "30px",
-        }}
-      >
-        {questions.map((_, index) => {
-          const answered = answers[index];
+                <button
+                  onClick={() => setSubmitted(true)}
+                  className="bg-red-600 text-white px-5 py-2 rounded-lg"
+                >
+                  Submit Exam
+                </button>
+              </div>
 
-          return (
-            <button
-              key={index}
-              onClick={() => setCurrentQuestion(index)}
-              style={{
-                width: "45px",
-                height: "45px",
-                borderRadius: "8px",
-                border: "none",
-                cursor: "pointer",
-                fontWeight: "bold",
-                color: "white",
-                background:
-                  currentQuestion === index
-                    ? "blue"
-                    : answered
-                    ? "green"
-                    : "gray",
-              }}
-            >
-              {index + 1}
-            </button>
-          );
-        })}
-      </div>
+              <p className="text-2xl font-semibold mb-8">
+                {questions[current].q}
+              </p>
 
-      {/* CURRENT QUESTION */}
-      <div style={{ marginTop: "30px" }}>
-        <h2>
-          Question {currentQuestion + 1} of {questions.length}
-        </h2>
+              <div className="space-y-4">
+                {["A", "B", "C"].map((option) => (
+                  <button
+                    key={option}
+                    onClick={() => handleAnswer(option)}
+                    className={`block w-full text-left p-4 rounded-xl border-2
+                    ${
+                      answers[current] === option
+                        ? "bg-blue-700 text-white border-blue-700"
+                        : "bg-white hover:bg-gray-100"
+                    }`}
+                  >
+                    <strong>{option}.</strong>{" "}
+                    {questions[current][option]}
+                  </button>
+                ))}
+              </div>
 
-        <h3>{questions[currentQuestion].q}</h3>
+              {/* NEXT PREVIOUS */}
+              <div className="flex justify-between mt-10">
+                <button
+                  disabled={current === 0}
+                  onClick={() => setCurrent(current - 1)}
+                  className="bg-gray-700 text-white px-6 py-3 rounded-xl disabled:opacity-50"
+                >
+                  Previous
+                </button>
 
-        {/* OPTION A */}
-        <label style={{ display: "block", marginTop: "15px" }}>
-          <input
-            type="radio"
-            name={`q${currentQuestion}`}
-            value="A"
-            checked={answers[currentQuestion] === "A"}
-            onChange={() =>
-              setAnswers({
-                ...answers,
-                [currentQuestion]: "A",
-              })
-            }
-          />
-          A. {questions[currentQuestion].A}
-        </label>
+                <button
+                  disabled={current === questions.length - 1}
+                  onClick={() => setCurrent(current + 1)}
+                  className="bg-blue-700 text-white px-6 py-3 rounded-xl disabled:opacity-50"
+                >
+                  Next
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="text-center">
+                <h1 className="text-5xl font-bold text-green-700">
+                  Exam Submitted
+                </h1>
 
-        {/* OPTION B */}
-        <label style={{ display: "block", marginTop: "15px" }}>
-          <input
-            type="radio"
-            name={`q${currentQuestion}`}
-            value="B"
-            checked={answers[currentQuestion] === "B"}
-            onChange={() =>
-              setAnswers({
-                ...answers,
-                [currentQuestion]: "B",
-              })
-            }
-          />
-          B. {questions[currentQuestion].B}
-        </label>
+                <p className="text-3xl mt-5">
+                  Score: {score} / {questions.length}
+                </p>
 
-        {/* OPTION C */}
-        <label style={{ display: "block", marginTop: "15px" }}>
-          <input
-            type="radio"
-            name={`q${currentQuestion}`}
-            value="C"
-            checked={answers[currentQuestion] === "C"}
-            onChange={() =>
-              setAnswers({
-                ...answers,
-                [currentQuestion]: "C",
-              })
-            }
-          />
-          C. {questions[currentQuestion].C}
-        </label>
-      </div>
+                <p className="text-xl mt-3">
+                  Percentage: {((score / questions.length) * 100).toFixed(1)}%
+                </p>
+              </div>
 
-      {/* NAVIGATION */}
-      <div style={{ marginTop: "40px" }}>
-        <button
-          onClick={prevQuestion}
-          disabled={currentQuestion === 0}
-          style={{
-            padding: "10px 20px",
-            marginRight: "10px",
-          }}
-        >
-          Previous
-        </button>
+              {/* CORRECTIONS */}
+              <div className="mt-10 space-y-5">
+                <h2 className="text-3xl font-bold">
+                  Corrections
+                </h2>
 
-        {currentQuestion < questions.length - 1 && (
-          <button
-            onClick={nextQuestion}
-            style={{
-              padding: "10px 20px",
-            }}
-          >
-            Next
-          </button>
-        )}
+                {questions.map((q, index) => (
+                  <div
+                    key={index}
+                    className="border p-5 rounded-xl"
+                  >
+                    <p className="font-bold mb-3">
+                      {q.q}
+                    </p>
 
-        {currentQuestion === questions.length - 1 && (
-          <button
-            onClick={submitExam}
-            style={{
-              padding: "10px 20px",
-              background: "green",
-              color: "white",
-              marginLeft: "10px",
-              border: "none",
-            }}
-          >
-            Submit Exam
-          </button>
-        )}
+                    <p>Your Answer: 
+                      <span className="font-bold ml-2">
+                        {answers[index] || "Not Answered"}
+                      </span>
+                    </p>
+
+                    <p className="text-green-700 font-bold">
+                      Correct Answer: {q.ans}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* NAVIGATION */}
+        <div className="bg-white p-5 rounded-2xl shadow-lg">
+          <h2 className="text-xl font-bold mb-5">
+            Question Navigation
+          </h2>
+
+          <div className="grid grid-cols-5 gap-3">
+            {questions.map((_, index) => (
+              <button
+                key={index}
+                onClick={() => setCurrent(index)}
+                className={`h-12 rounded-lg font-bold
+                ${
+                  current === index
+                    ? "bg-blue-700 text-white"
+                    : answers[index]
+                    ? "bg-green-500 text-white"
+                    : "bg-gray-200"
+                }`}
+              >
+                {index + 1}
+              </button>
+            ))}
+          </div>
+
+          <div className="mt-8">
+            <p className="font-bold">
+              Total Questions: {questions.length}
+            </p>
+
+            <p className="mt-2 font-bold">
+              Answered: {Object.keys(answers).length}
+            </p>
+
+            <p className="mt-2 font-bold">
+              Remaining: {questions.length - Object.keys(answers).length}
+            </p>
+          </div>
+        </div>
       </div>
     </div>
   );
-    }
+        }
