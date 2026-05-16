@@ -7,7 +7,7 @@ export default function LoginPage() {
   const [id, setId] = useState("");
   const router = useRouter();
 
-  // STUDENT IDS
+  // ================= STUDENT IDS =================
   const studentIDs = [
     "NUR/25U/45002",
     "NUR/25U/45013",
@@ -156,14 +156,14 @@ export default function LoginPage() {
     const cleanID = id.trim().toUpperCase();
     const validIDs = studentIDs.map((i) => i.toUpperCase());
 
-    // ADMIN LOGIN
+    // ================= ADMIN LOGIN =================
     if (cleanID === ADMIN_KEY) {
       localStorage.setItem("role", "admin");
       router.push("/admin");
       return;
     }
 
-    // STUDENT LOGIN
+    // ================= STUDENT LOGIN =================
     if (validIDs.includes(cleanID)) {
       localStorage.setItem("role", "student");
       localStorage.setItem("studentID", cleanID);
@@ -175,28 +175,36 @@ export default function LoginPage() {
   };
 
   return (
-    <div style={{ padding: "40px" }}>
-      <h1>CBT Login</h1>
+    <div style={{ padding: "40px", textAlign: "center" }}>
+      <h1>CBT LOGIN SYSTEM</h1>
 
       <input
-        placeholder="Enter Student ID or Admin Key"
         value={id}
         onChange={(e) => setId(e.target.value)}
-        style={{ padding: "10px", marginTop: "10px", width: "300px" }}
+        placeholder="Enter Student ID or MAMBO"
+        style={{
+          padding: "12px",
+          width: "300px",
+          marginTop: "20px",
+        }}
       />
 
       <br />
 
       <button
         onClick={handleLogin}
-        style={{ marginTop: "20px", padding: "10px 20px" }}
+        style={{
+          marginTop: "20px",
+          padding: "10px 30px",
+          cursor: "pointer",
+        }}
       >
-        Login
+        LOGIN
       </button>
 
       <p style={{ marginTop: "20px", fontSize: "12px" }}>
-        Students use valid ID | Admin uses: MAMBO
+        Admin Key: <b>MAMBO</b>
       </p>
     </div>
   );
-  }
+}
