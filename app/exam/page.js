@@ -24,65 +24,512 @@ export default function ExamPage() {
   // QUESTIONS
   // =========================
   const questions = [
-    { q: "1. If A = {1,2} and B = {2,3}, A ∪ B = ?", A: "{1,2,3}", B: "{2}", C: "{1,3}", ans: "A" },
-    { q: "2. A ∩ B for A={1,2,3}, B={2,4} is?", A: "{1}", B: "{2}", C: "{1,2,3,4}", ans: "B" },
-    { q: "3. Empty set is denoted by?", A: "{}", B: "Ø", C: "Both", ans: "C" },
-    { q: "4. If n(A)=3, n(B)=4 disjoint, n(A∪B)=?", A: "7", B: "12", C: "1", ans: "A" },
-    { q: "5. Subset of every set is?", A: "Null set", B: "Universal set", C: "Empty set only", ans: "A" },
-    { q: "6. Power set of {a} has?", A: "1", B: "2", C: "3", ans: "B" },
-    { q: "7. If A⊆B and B⊆A then?", A: "A=B", B: "A≠B", C: "A empty", ans: "A" },
-    { q: "8. Complement of universal set is?", A: "Universal", B: "Empty set", C: "None", ans: "B" },
-    { q: "9. If A={1,2}, number of subsets?", A: "2", B: "3", C: "4", ans: "C" },
-    { q: "10. Union means?", A: "Common elements", B: "All elements", C: "None", ans: "B" },
-    { q: "11. Intersection means?", A: "Common elements", B: "All elements", C: "No elements", ans: "A" },
-    { q: "12. A−B means?", A: "Common", B: "Elements in A not B", C: "All B", ans: "B" },
-    { q: "13. Symmetric difference excludes?", A: "Common elements", B: "Union", C: "Empty set", ans: "A" },
-    { q: "14. Universal set contains?", A: "Some elements", B: "All elements", C: "No elements", ans: "B" },
-    { q: "15. If A∩B=∅ then sets are?", A: "Equal", B: "Disjoint", C: "Subset", ans: "B" },
+{
+id: 1,
+question: "If z = (1+i)/(1-i), find z^20",
+options: ["1", "-1", "i", "-i", "0", "2^10"],
+answer: "1"
+},
 
-    { q: "16. (a+b)^2 = ?", A: "a^2+b^2", B: "a^2+2ab+b^2", C: "a^2-ab+b^2", ans: "B" },
-    { q: "17. Middle term of (a+b)^2?", A: "ab", B: "2ab", C: "a^2", ans: "B" },
-    { q: "18. (a+b)^3 expands to?", A: "a^3+3a^2b+3ab^2+b^3", B: "a^3+b^3", C: "a^2+b^2", ans: "A" },
-    { q: "19. Coefficient of x in (1+x)^3?", A: "1", B: "3", C: "6", ans: "B" },
-    { q: "20. Binomial theorem applies to?", A: "1 term", B: "2 terms", C: "3 terms", ans: "B" },
+{
+id: 2,
+question: "Convert 315° to radians",
+options: ["5π/6", "7π/4", "3π/2", "11π/6", "9π/4", "5π/4"],
+answer: "7π/4"
+},
 
-    { q: "21. (x−y)^2 = ?", A: "x^2+y^2", B: "x^2-2xy+y^2", C: "x^2-xy+y^2", ans: "B" },
-    { q: "22. Number of terms in (a+b)^n is?", A: "n", B: "n+1", C: "2n", ans: "B" },
-    { q: "23. Binomial coefficient formula is?", A: "nCr", B: "nPr", C: "n!", ans: "A" },
-    { q: "24. (a−b)^3 middle term?", A: "3a^2b", B: "−3a^2b+3ab^2", C: "3ab", ans: "B" },
-    { q: "25. Pascal triangle used for?", A: "Integration", B: "Binomial expansion", C: "Differentiation", ans: "B" },
+{
+id: 3,
+question: "Evaluate ΣC(10,k) from k=0 to 10",
+options: ["512", "1024", "2048", "4096", "256", "1000"],
+answer: "1024"
+},
 
-    { q: "26. (1+x)^2 coefficient of x^2?", A: "1", B: "2", C: "3", ans: "A" },
-    { q: "27. General term in binomial expansion?", A: "Tr+1", B: "Tr", C: "Tn", ans: "A" },
-    { q: "28. (a+b)^0 equals?", A: "0", B: "1", C: "a+b", ans: "B" },
-    { q: "29. Sum of coefficients in (a+b)^n?", A: "2^n", B: "n^2", C: "n!", ans: "A" },
-    { q: "30. Expansion valid for?", A: "Any expression", B: "Positive integers n", C: "Only fractions", ans: "B" },
+{
+id: 4,
+question: "If z² + 2z + 5 = 0, find |z|",
+options: ["1", "2", "√5", "5", "2√5", "4"],
+answer: "√5"
+},
 
-    { q: "31. First step in induction is?", A: "Assume true", B: "Verify n=1", C: "Solve n+1", ans: "B" },
-    { q: "32. Second step is?", A: "Induction hypothesis", B: "Conclusion", C: "Graph", ans: "A" },
-    { q: "33. Goal is to prove?", A: "n only", B: "n+1", C: "All integers", ans: "C" },
-    { q: "34. Induction used for?", A: "Graphs", B: "Proofs", C: "Division", ans: "B" },
-    { q: "35. Base case is?", A: "n=0 or 1", B: "n=10", C: "n=100", ans: "A" },
+{
+id: 5,
+question: "Solve 2sin²x − 3sinx + 1 = 0",
+options: [
+"30°,150°,90°",
+"45°,135°",
+"90°,270°",
+"0°,180°",
+"60°,120°",
+"30°,60°"
+],
+answer: "30°,150°,90°"
+},
 
-    { q: "36. Assume P(k) means?", A: "False", B: "True for k", C: "Unknown", ans: "B" },
-    { q: "37. Then prove?", A: "P(k+1)", B: "P(k-1)", C: "None", ans: "A" },
-    { q: "38. If both steps hold then?", A: "False", B: "True for all n", C: "Undefined", ans: "B" },
-    { q: "39. Induction applies to?", A: "Integers", B: "Reals", C: "Complex only", ans: "A" },
-    { q: "40. Weak induction assumes?", A: "P(k)", B: "P(k+1)", C: "Both", ans: "A" },
+{
+id: 6,
+question: "Find the sum of GP: 2 + 6 + 18 + ... up to 8 terms",
+options: ["6560", "6500", "6600", "6561", "6550", "6520"],
+answer: "6560"
+},
 
-    { q: "41. i² equals?", A: "1", B: "-1", C: "0", ans: "B" },
-    { q: "42. Complex number form?", A: "a+b", B: "a+bi", C: "ab", ans: "B" },
-    { q: "43. Real part of 3+2i?", A: "3", B: "2", C: "i", ans: "A" },
-    { q: "44. Imaginary unit is?", A: "i", B: "j", C: "k", ans: "A" },
-    { q: "45. Conjugate of a+bi?", A: "a-bi", B: "-a-bi", C: "bi-a", ans: "A" },
+{
+id: 7,
+question: "Evaluate 1³ + 2³ + ... + 20³",
+options: ["42025", "44100", "40000", "40425", "42000", "44125"],
+answer: "44100"
+},
 
-    { q: "46. Modulus formula?", A: "a+b", B: "√(a²+b²)", C: "a-b", ans: "B" },
-    { q: "47. i³ equals?", A: "i", B: "-i", C: "1", ans: "B" },
-    { q: "48. i⁴ equals?", A: "0", B: "1", C: "-1", ans: "B" },
-    { q: "49. Complex numbers lie on?", A: "Line", B: "Plane", C: "Circle", ans: "B" },
-    { q: "50. Arg(z) refers to?", A: "Magnitude", B: "Angle", C: "Sum", ans: "B" }
-  ];
+{
+id: 8,
+question: "If z = cosθ + isinθ and θ = 2π/7, evaluate z⁷",
+options: ["1", "-1", "i", "-i", "7", "0"],
+answer: "1"
+},
 
+{
+id: 9,
+question: "Find the coefficient of x⁴ in (2x−3)⁷",
+options: ["-15120", "15120", "-7560", "7560", "5040", "-5040"],
+answer: "-15120"
+},
+
+{
+id: 10,
+question: "How many subsets does a set with 8 elements have?",
+options: ["64", "128", "256", "512", "1024", "16"],
+answer: "256"
+},
+
+{
+id: 11,
+question: "Find sin²45° + cos²45°",
+options: ["0", "1/2", "1", "2", "√2", "√3"],
+answer: "1"
+},
+
+{
+id: 12,
+question: "Find the modulus of 3 + 4i",
+options: ["3", "4", "5", "6", "7", "8"],
+answer: "5"
+},
+
+{
+id: 13,
+question: "Convert π/3 radians to degrees",
+options: ["30°", "45°", "60°", "90°", "120°", "180°"],
+answer: "60°"
+},
+
+{
+id: 14,
+question: "Find the 5th term of the sequence 2, 6, 18, 54...",
+options: ["108", "162", "216", "324", "486", "96"],
+answer: "162"
+},
+
+{
+id: 15,
+question: "Evaluate i^15",
+options: ["1", "-1", "i", "-i", "15", "0"],
+answer: "-i"
+},
+
+{
+id: 16,
+question: "Find the radius if arc length = 14π and angle = 7π/6",
+options: ["10", "12", "14", "16", "18", "20"],
+answer: "12"
+},
+
+{
+id: 17,
+question: "Solve tan²x = 3 for 0 ≤ x < 2π",
+options: [
+"π/3,2π/3,4π/3,5π/3",
+"π/4,5π/4",
+"π/6,11π/6",
+"π/2,3π/2",
+"π/3,4π/3",
+"π/6,7π/6"
+],
+answer: "π/3,2π/3,4π/3,5π/3"
+},
+
+{
+id: 18,
+question: "Find Σn from n=1 to 100",
+options: ["5000", "5050", "5100", "5150", "4950", "4900"],
+answer: "5050"
+},
+
+{
+id: 19,
+question: "Find Σn² from n=1 to 10",
+options: ["365", "375", "385", "395", "405", "415"],
+answer: "385"
+},
+
+{
+id: 20,
+question: "Find the common ratio of 3, 9, 27, 81",
+options: ["2", "3", "4", "5", "6", "9"],
+answer: "3"
+},
+
+{
+id: 21,
+question: "Find cos60°",
+options: ["0", "1/2", "1", "√2/2", "√3/2", "2"],
+answer: "1/2"
+},
+
+{
+id: 22,
+question: "Evaluate (1+i)^8",
+options: ["16", "-16", "8", "-8", "1", "0"],
+answer: "16"
+},
+
+{
+id: 23,
+question: "Find the sum to infinity of 8 + 4 + 2 + 1 + ...",
+options: ["8", "12", "14", "16", "18", "20"],
+answer: "16"
+},
+
+{
+id: 24,
+question: "Find the argument of i",
+options: ["0", "π/6", "π/4", "π/2", "π", "2π"],
+answer: "π/2"
+},
+
+{
+id: 25,
+question: "How many proper subsets does a set of 5 elements have?",
+options: ["16", "31", "32", "30", "25", "15"],
+answer: "31"
+},
+
+{
+id: 26,
+question: "Find the coefficient of x² in (x+1)^5",
+options: ["5", "10", "15", "20", "25", "30"],
+answer: "10"
+},
+
+{
+id: 27,
+question: "Find sin30°",
+options: ["0", "1/2", "1", "√2/2", "√3/2", "2"],
+answer: "1/2"
+},
+
+{
+id: 28,
+question: "Find cos²x + sin²x",
+options: ["0", "1", "2", "x", "sinx", "cosx"],
+answer: "1"
+},
+
+{
+id: 29,
+question: "Find the 10th term of AP: 3,7,11,15...",
+options: ["35", "37", "39", "41", "43", "45"],
+answer: "39"
+},
+
+{
+id: 30,
+question: "Evaluate i^24",
+options: ["1", "-1", "i", "-i", "24", "0"],
+answer: "1"
+},
+
+{
+id: 31,
+question: "Find n(C)r when n=5 and r=2",
+options: ["5", "10", "15", "20", "25", "30"],
+answer: "10"
+},
+
+{
+id: 32,
+question: "Find tan45°",
+options: ["0", "1/2", "1", "√2", "√3", "2"],
+answer: "1"
+},
+
+{
+id: 33,
+question: "Find the sum of first 20 natural numbers",
+options: ["190", "200", "210", "220", "230", "240"],
+answer: "210"
+},
+
+{
+id: 34,
+question: "Convert 2π radians to degrees",
+options: ["90°", "180°", "270°", "360°", "720°", "540°"],
+answer: "360°"
+},
+
+{
+id: 35,
+question: "Find the modulus of 1−i",
+options: ["1", "√2", "2", "√3", "3", "4"],
+answer: "√2"
+},
+
+{
+id: 36,
+question: "Find the sum of GP 1+2+4+8+16",
+options: ["15", "31", "32", "30", "63", "64"],
+answer: "31"
+},
+
+{
+id: 37,
+question: "Evaluate (2+i)(2−i)",
+options: ["3", "4", "5", "6", "7", "8"],
+answer: "5"
+},
+
+{
+id: 38,
+question: "Find the value of sec60°",
+options: ["1", "2", "1/2", "√2", "√3", "4"],
+answer: "2"
+},
+
+{
+id: 39,
+question: "Find the 6th term in expansion of (x+y)^10",
+options: ["210x⁵y⁵", "252x⁵y⁵", "120x⁵y⁵", "300x⁵y⁵", "150x⁵y⁵", "400x⁵y⁵"],
+answer: "252x⁵y⁵"
+},
+
+{
+id: 40,
+question: "Find Σ2n from n=1 to 10",
+options: ["100", "110", "120", "90", "80", "70"],
+answer: "110"
+},
+
+// CONTINUE TO 70
+
+{
+id: 41,
+question: "Find cot45°",
+options: ["0", "1", "2", "√2", "√3", "4"],
+answer: "1"
+},
+
+{
+id: 42,
+question: "Evaluate i^100",
+options: ["1", "-1", "i", "-i", "100", "0"],
+answer: "1"
+},
+
+{
+id: 43,
+question: "Find the number of subsets of a set with 6 elements",
+options: ["16", "32", "64", "128", "256", "512"],
+answer: "64"
+},
+
+{
+id: 44,
+question: "Find the coefficient of x³ in (x+2)^5",
+options: ["20", "40", "80", "160", "10", "5"],
+answer: "40"
+},
+
+{
+id: 45,
+question: "Find cos0°",
+options: ["0", "1", "-1", "1/2", "√2", "2"],
+answer: "1"
+},
+
+{
+id: 46,
+question: "Find sin90°",
+options: ["0", "1/2", "1", "√2", "√3", "2"],
+answer: "1"
+},
+
+{
+id: 47,
+question: "Find tan60°",
+options: ["1", "√2", "√3", "2", "3", "4"],
+answer: "√3"
+},
+
+{
+id: 48,
+question: "Find the 7th term of AP 5,8,11,14...",
+options: ["20", "21", "22", "23", "24", "25"],
+answer: "23"
+},
+
+{
+id: 49,
+question: "Evaluate (1-i)(1+i)",
+options: ["0", "1", "2", "3", "4", "5"],
+answer: "2"
+},
+
+{
+id: 50,
+question: "Find the sum of first 50 natural numbers",
+options: ["1250", "1275", "1300", "1325", "1350", "1375"],
+answer: "1275"
+},
+
+{
+id: 51,
+question: "Convert π/2 radians to degrees",
+options: ["30°", "45°", "60°", "90°", "180°", "270°"],
+answer: "90°"
+},
+
+{
+id: 52,
+question: "Find |5i|",
+options: ["1", "2", "3", "4", "5", "25"],
+answer: "5"
+},
+
+{
+id: 53,
+question: "Find the common difference of 2,5,8,11",
+options: ["1", "2", "3", "4", "5", "6"],
+answer: "3"
+},
+
+{
+id: 54,
+question: "Evaluate i²",
+options: ["1", "-1", "i", "-i", "2", "0"],
+answer: "-1"
+},
+
+{
+id: 55,
+question: "Find sin60°",
+options: ["1", "√2", "√3/2", "1/2", "2", "3"],
+answer: "√3/2"
+},
+
+{
+id: 56,
+question: "Find the sum to infinity of 3 + 1.5 + 0.75 + ...",
+options: ["4", "5", "6", "7", "8", "9"],
+answer: "6"
+},
+
+{
+id: 57,
+question: "Find the coefficient of x in (x+1)^4",
+options: ["1", "2", "3", "4", "5", "6"],
+answer: "4"
+},
+
+{
+id: 58,
+question: "Find cos90°",
+options: ["0", "1", "-1", "1/2", "√2", "2"],
+answer: "0"
+},
+
+{
+id: 59,
+question: "Evaluate (3+i)(3−i)",
+options: ["8", "9", "10", "11", "12", "13"],
+answer: "10"
+},
+
+{
+id: 60,
+question: "Find tan30°",
+options: ["1/√3", "√3", "1", "0", "2", "3"],
+answer: "1/√3"
+},
+
+{
+id: 61,
+question: "Find the 4th term of GP 3,6,12,24...",
+options: ["12", "24", "36", "48", "60", "72"],
+answer: "24"
+},
+
+{
+id: 62,
+question: "Evaluate i^8",
+options: ["1", "-1", "i", "-i", "8", "0"],
+answer: "1"
+},
+
+{
+id: 63,
+question: "Find the sum of first 10 even numbers",
+options: ["100", "110", "120", "90", "80", "70"],
+answer: "110"
+},
+
+{
+id: 64,
+question: "Find sec45°",
+options: ["1", "√2", "2", "√3", "3", "4"],
+answer: "√2"
+},
+
+{
+id: 65,
+question: "Find the number of subsets of a set with 10 elements",
+options: ["256", "512", "1024", "2048", "4096", "100"],
+answer: "1024"
+},
+
+{
+id: 66,
+question: "Find cos120°",
+options: ["1/2", "-1/2", "√3/2", "-√3/2", "1", "-1"],
+answer: "-1/2"
+},
+
+{
+id: 67,
+question: "Evaluate (2+i)^2",
+options: ["3+4i", "4+4i", "5+4i", "6+4i", "7+4i", "8+4i"],
+answer: "3+4i"
+},
+
+{
+id: 68,
+question: "Find the coefficient of x² in (x−1)^4",
+options: ["4", "6", "8", "10", "12", "14"],
+answer: "6"
+},
+
+{
+id: 69,
+question: "Find sin45°",
+options: ["1/2", "√2/2", "√3/2", "1", "0", "2"],
+answer: "√2/2"
+},
+
+{
+id: 70,
+question: "Find the sum of first 100 odd numbers",
+options: ["1000", "5000", "10000", "5050", "9999", "10100"],
+answer: "10000"
+}
+];
   // =========================
   // FULLSCREEN MODE
   // =========================
