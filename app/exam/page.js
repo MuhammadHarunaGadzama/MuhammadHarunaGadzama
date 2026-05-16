@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 
 export default function CBTExam() {
 
-  // ================= QUESTIONS =================
   const questions = [
     { q: "1. If A={1,2} and B={2,3}, A∪B=?", A:"{1,2,3}", B:"{2}", C:"{1,3}", ans:"A" },
     { q: "2. A∩B for A={1,2,3}, B={2,4}=?", A:"{1}", B:"{2}", C:"{1,2,3,4}", ans:"B" },
@@ -67,21 +66,14 @@ export default function CBTExam() {
     { q: "50. Common difference in AP?", A:"r", B:"d", C:"n", ans:"B" },
   ];
 
-  // ================= STATES =================
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState({});
   const [submitted, setSubmitted] = useState(false);
-
-  // ================= 40 MINUTES =================
   const [timeLeft, setTimeLeft] = useState(2400);
 
   useEffect(() => {
     if (submitted) return;
-
-    if (timeLeft <= 0) {
-      setSubmitted(true);
-      return;
-    }
+    if (timeLeft <= 0) return setSubmitted(true);
 
     const timer = setInterval(() => {
       setTimeLeft((prev) => prev - 1);
@@ -90,202 +82,108 @@ export default function CBTExam() {
     return () => clearInterval(timer);
   }, [timeLeft, submitted]);
 
-  // ================= AUTO LOGOUT ONLY WHEN MINIMIZED =================
   useEffect(() => {
     const handleVisibility = () => {
       if (document.hidden) {
-        alert("Exam closed because you minimized/switched tab.");
+        alert("Exam closed (tab switch detected)");
         window.location.reload();
       }
     };
 
     document.addEventListener("visibilitychange", handleVisibility);
-
-    return () => {
-      document.removeEventListener("visibilitychange", handleVisibility);
-    };
+    return () => document.removeEventListener("visibilitychange", handleVisibility);
   }, []);
 
-  // ================= TIME =================
+  const handleAnswer = (option) => {
+    setAnswers((prev) => ({
+      ...prev,
+      [current]: option,
+    }));
+  };
+
   const minutes = Math.floor(timeLeft / 60);
   const seconds = timeLeft % 60;
 
-  // ================= ANSWERS =================
-  const handleAnswer = (option) => {
-    setAnswers({
-      ...answers,
-      [current]: option,
-    });
-  };
-
-  // ================= SCORE =================
-  const score = questions.reduce((acc, q, index) => {
-    return answers[index] === q.ans ? acc + 1 : acc;
-  }, 0);
+  const score = questions.reduce((acc, q, i) =>
+    answers[i] === q.ans ? acc + 1 : acc
+  , 0);
 
   return (
     <div className="min-h-screen bg-gray-100 p-4">
 
-      {/* HEADER */}
       <div className="bg-blue-700 text-white p-4 rounded-xl flex justify-between items-center">
-        <h1 className="text-2xl font-bold">
-          Mathematics CBT Examination
-        </h1>
+        <h1 className="text-3xl font-bold">Mathematics CBT Examination</h1>
 
-        <div className="bg-black px-5 py-2 rounded-lg text-xl font-bold">
+        <div className="bg-black px-5 py-2 rounded-lg text-2xl font-bold">
           {minutes}:{seconds.toString().padStart(2, "0")}
         </div>
       </div>
 
-      {/* MAIN */}
       <div className="grid md:grid-cols-4 gap-5 mt-5">
 
-        {/* QUESTION AREA */}
-        <div className="md:col-span-3 bg-white p-6 rounded-2xl shadow-lg">
+        <div className="md:col-span-3 bg-white p-8 rounded-2xl shadow-lg">
 
           {!submitted ? (
             <>
-              <div className="flex justify-between mb-5">
-                <h2 className="text-xl font-bold">
-                  Question {current + 1} of {questions.length}
-                </h2>
+              <h2 className="text-2xl font-bold mb-5">
+                Question {current + 1} of {questions.length}
+              </h2>
 
-                <button
-                  onClick={() => setSubmitted(true)}
-                  className="bg-red-600 text-white px-5 py-2 rounded-lg"
-                >
-                  Submit Exam
-                </button>
-              </div>
-
-              <p className="text-2xl font-semibold mb-8">
+              <p className="text-4xl font-bold mb-10">
                 {questions[current].q}
               </p>
 
               <div className="space-y-4">
-                {["A", "B", "C"].map((option) => (
+                {["A","B","C"].map((opt) => (
                   <button
-                    key={option}
-                    onClick={() => handleAnswer(option)}
-                    className={`block w-full text-left p-4 rounded-xl border-2
-                    ${
-                      answers[current] === option
-                        ? "bg-blue-700 text-white border-blue-700"
-                        : "bg-white hover:bg-gray-100"
-                    }`}
+                    key={opt}
+                    onClick={() => handleAnswer(opt)}
+                    className={`block w-full text-left p-6 text-xl rounded-xl border-2
+                      ${
+                        answers[current] === opt
+                          ? "bg-blue-700 text-white"
+                          : "bg-white hover:bg-gray-100"
+                      }`}
                   >
-                    <strong>{option}.</strong>{" "}
-                    {questions[current][option]}
+                    <strong>{opt}.</strong> {questions[current][opt]}
                   </button>
                 ))}
               </div>
 
-              {/* NEXT PREVIOUS */}
-              <div className="flex justify-between mt-10">
-                <button
-                  disabled={current === 0}
-                  onClick={() => setCurrent(current - 1)}
-                  className="bg-gray-700 text-white px-6 py-3 rounded-xl disabled:opacity-50"
-                >
-                  Previous
-                </button>
-
-                <button
-                  disabled={current === questions.length - 1}
-                  onClick={() => setCurrent(current + 1)}
-                  className="bg-blue-700 text-white px-6 py-3 rounded-xl disabled:opacity-50"
-                >
-                  Next
-                </button>
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="text-center">
-                <h1 className="text-5xl font-bold text-green-700">
-                  Exam Submitted
-                </h1>
-
-                <p className="text-3xl mt-5">
-                  Score: {score} / {questions.length}
-                </p>
-
-                <p className="text-xl mt-3">
-                  Percentage: {((score / questions.length) * 100).toFixed(1)}%
-                </p>
-              </div>
-
-              {/* CORRECTIONS */}
-              <div className="mt-10 space-y-5">
-                <h2 className="text-3xl font-bold">
-                  Corrections
-                </h2>
-
-                {questions.map((q, index) => (
-                  <div
-                    key={index}
-                    className="border p-5 rounded-xl"
+              <div className="grid grid-cols-5 gap-4 mt-10">
+                {questions.map((_, i) => (
+                  <button
+                    key={i}
+                    onClick={() => setCurrent(i)}
+                    className={`h-16 w-16 text-xl font-bold rounded-xl border
+                      ${
+                        current === i
+                          ? "bg-blue-700 text-white"
+                          : answers[i] !== undefined
+                          ? "bg-green-500 text-white"
+                          : "bg-white"
+                      }`}
                   >
-                    <p className="font-bold mb-3">
-                      {q.q}
-                    </p>
-
-                    <p>Your Answer: 
-                      <span className="font-bold ml-2">
-                        {answers[index] || "Not Answered"}
-                      </span>
-                    </p>
-
-                    <p className="text-green-700 font-bold">
-                      Correct Answer: {q.ans}
-                    </p>
-                  </div>
+                    {i + 1}
+                  </button>
                 ))}
               </div>
+
             </>
+          ) : (
+            <div className="text-center">
+              <h1 className="text-5xl font-bold text-green-700">
+                Exam Submitted
+              </h1>
+
+              <p className="text-3xl mt-5">
+                Score: {score}/{questions.length}
+              </p>
+            </div>
           )}
-        </div>
 
-        {/* NAVIGATION */}
-        <div className="bg-white p-5 rounded-2xl shadow-lg">
-          <h2 className="text-xl font-bold mb-5">
-            Question Navigation
-          </h2>
-
-          <div className="grid grid-cols-5 gap-3">
-            {questions.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrent(index)}
-                className={`h-12 rounded-lg font-bold
-                ${
-                  current === index
-                    ? "bg-blue-700 text-white"
-                    : answers[index]
-                    ? "bg-green-500 text-white"
-                    : "bg-gray-200"
-                }`}
-              >
-                {index + 1}
-              </button>
-            ))}
-          </div>
-
-          <div className="mt-8">
-            <p className="font-bold">
-              Total Questions: {questions.length}
-            </p>
-
-            <p className="mt-2 font-bold">
-              Answered: {Object.keys(answers).length}
-            </p>
-
-            <p className="mt-2 font-bold">
-              Remaining: {questions.length - Object.keys(answers).length}
-            </p>
-          </div>
         </div>
       </div>
     </div>
   );
-        }
+     }
