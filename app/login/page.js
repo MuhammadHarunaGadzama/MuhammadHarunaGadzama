@@ -150,11 +150,11 @@ export default function LoginPage() {
     "NUR/25U/4646141"
   ];
 
-  // ADMIN KEY
   const ADMIN_KEY = "MAMBO";
 
   const handleLogin = () => {
-    const cleanID = id.trim();
+    const cleanID = id.trim().toUpperCase();
+    const validIDs = studentIDs.map((i) => i.toUpperCase());
 
     // ADMIN LOGIN
     if (cleanID === ADMIN_KEY) {
@@ -164,7 +164,7 @@ export default function LoginPage() {
     }
 
     // STUDENT LOGIN
-    if (studentIDs.includes(cleanID)) {
+    if (validIDs.includes(cleanID)) {
       localStorage.setItem("role", "student");
       localStorage.setItem("studentID", cleanID);
       router.push("/exam");
@@ -195,7 +195,7 @@ export default function LoginPage() {
       </button>
 
       <p style={{ marginTop: "20px", fontSize: "12px" }}>
-        Students use ID list | Admin uses: MAMBO
+        Students use valid ID | Admin uses: MAMBO
       </p>
     </div>
   );
