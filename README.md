@@ -1,12 +1,12 @@
-MHG SCIENCE AI V2
+# CBT System
 
-Features:
-- Login system (local)
-- Dark mode
-- Quiz system
-- Voice AI (speech recognition + speech synthesis)
+## Install
 
-Deploy:
-1. npm install
-2. npm run dev
-3. Deploy on Vercel
+npm install
+
+## Run
+
+npm run dev
+
+## Deploy
+Upload to GitHub and deploy on Vercel.
