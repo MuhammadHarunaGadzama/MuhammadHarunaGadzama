@@ -425,13 +425,14 @@ answer: "10000"
 }
 ];
 
-
 export default function Exam() {
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState({});
   const [time, setTime] = useState(40 * 60);
   const [submitted, setSubmitted] = useState(false);
+  const [fullscreen, setFullscreen] = useState(false);
 
+  /* TIMER */
   useEffect(() => {
     if (time <= 0) return setSubmitted(true);
     const t = setInterval(() => setTime((p) => p - 1), 1000);
@@ -444,8 +445,21 @@ export default function Exam() {
     return `${m}:${s.toString().padStart(2, "0")}`;
   };
 
+  /* FULLSCREEN */
+  const toggleFullscreen = () => {
+    const el = document.documentElement;
+
+    if (!document.fullscreenElement) {
+      el.requestFullscreen?.();
+      setFullscreen(true);
+    } else {
+      document.exitFullscreen?.();
+      setFullscreen(false);
+    }
+  };
+
+  /* SELECT ANSWER */
   const selectAnswer = (val) => {
-    if (submitted) return;
     setAnswers((p) => ({ ...p, [current]: val }));
   };
 
@@ -454,14 +468,58 @@ export default function Exam() {
     0
   );
 
-  const isAnswered = (i) => answers[i] !== undefined;
+  /* =========================
+     CORRECTION SCREEN
+  ========================= */
+  if (submitted) {
+    return (
+      <div className="bg-black text-white min-h-screen p-10 text-2xl">
+        <h1 className="text-5xl font-bold mb-6">Exam Correction</h1>
 
+        <p className="text-3xl mb-10">
+          Score: {score} / {questions.length}
+        </p>
+
+        {questions.map((q, i) => (
+          <div key={i} className="mb-10">
+            <h2 className="text-3xl font-bold mb-4">
+              {i + 1}. {q.question}
+            </h2>
+
+            {q.options.map((opt, idx) => {
+              const isCorrect = opt === q.answer;
+              const isWrong = answers[i] === opt && !isCorrect;
+
+              return (
+                <div
+                  key={idx}
+                  className={`p-4 mb-3 rounded text-2xl ${
+                    isCorrect
+                      ? "bg-green-600"
+                      : isWrong
+                      ? "bg-red-600"
+                      : "bg-zinc-800"
+                  }`}
+                >
+                  {String.fromCharCode(65 + idx)}. {opt}
+                </div>
+              );
+            })}
+          </div>
+        ))}
+      </div>
+    );
+  }
+
+  /* =========================
+        EXAM SCREEN
+  ========================= */
   return (
-    <div className="flex min-h-screen bg-black text-white">
+    <div className="flex min-h-screen bg-black text-white text-2xl">
 
-      {/* SIDEBAR */}
-      <div className="w-56 p-4 bg-zinc-900">
-        <h2 className="text-2xl font-bold text-center mb-4">
+      {/* LEFT NAV */}
+      <div className="w-48 bg-zinc-900 p-3">
+        <h2 className="text-center font-bold text-xl mb-4">
           Questions
         </h2>
 
@@ -470,9 +528,9 @@ export default function Exam() {
             <button
               key={q.id}
               onClick={() => setCurrent(i)}
-              className={`p-3 text-lg font-bold rounded ${
-                isAnswered(i) ? "bg-green-600" : "bg-zinc-700"
-              } ${current === i ? "border-2 border-white" : ""}`}
+              className={`p-3 rounded text-xl ${
+                answers[i] ? "bg-green-600" : "bg-zinc-700"
+              }`}
             >
               {q.id}
             </button>
@@ -484,51 +542,62 @@ export default function Exam() {
       <div className="flex-1 p-10">
 
         {/* TOP BAR */}
-        <div className="flex justify-between mb-8">
+        <div className="flex justify-between items-center mb-8">
           <h1 className="text-4xl font-bold">CBT EXAM</h1>
 
-          <div className="bg-red-600 px-5 py-3 text-2xl font-bold rounded">
-            {formatTime()}
+          <div className="flex gap-4 items-center">
+            <div className="bg-red-600 px-5 py-2 rounded text-2xl">
+              {formatTime()}
+            </div>
+
+            <button
+              onClick={toggleFullscreen}
+              className="bg-blue-600 px-4 py-2 rounded text-lg"
+            >
+              {fullscreen ? "Exit Fullscreen" : "Fullscreen"}
+            </button>
           </div>
         </div>
 
         {/* QUESTION */}
         <div className="bg-zinc-800 p-8 rounded">
-          <h2 className="text-3xl font-bold mb-8">
-            {questions[current].question}
+
+          <h2 className="text-3xl font-bold mb-6">
+            {questions[current]?.question || "Add questions"}
           </h2>
 
-          {questions[current].options.map((opt, i) => {
-            const correct = opt === questions[current].answer;
-            const selected = answers[current] === opt;
+          {/* OPTIONS (YOUR RADIO STYLE) */}
+          <div className="space-y-4">
+            {questions[current]?.options?.map((opt, i) => {
+              const selected = answers[current] === opt;
 
-            return (
-              <button
-                key={i}
-                onClick={() => selectAnswer(opt)}
-                className={`block w-full text-left p-5 mb-4 rounded text-2xl ${
-                  submitted
-                    ? correct
-                      ? "bg-green-600"
-                      : selected
-                      ? "bg-red-600"
-                      : "bg-zinc-700"
-                    : selected
-                    ? "bg-green-600"
-                    : "bg-zinc-700"
-                }`}
-              >
-                {String.fromCharCode(65 + i)}. {opt}
-              </button>
-            );
-          })}
+              return (
+                <label
+                  key={i}
+                  className={`flex items-center gap-4 p-5 rounded border cursor-pointer text-2xl ${
+                    selected ? "border-blue-500" : "border-zinc-700"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    name={`q-${current}`}
+                    checked={selected}
+                    onChange={() => selectAnswer(opt)}
+                    className="w-6 h-6 accent-blue-600"
+                  />
+
+                  {String.fromCharCode(65 + i)}. {opt}
+                </label>
+              );
+            })}
+          </div>
         </div>
 
-        {/* CONTROLS */}
-        <div className="flex justify-between mt-8">
+        {/* NAVIGATION */}
+        <div className="flex justify-between mt-10">
           <button
             onClick={() => setCurrent((p) => Math.max(p - 1, 0))}
-            className="bg-gray-600 px-7 py-4 text-xl rounded"
+            className="bg-gray-600 px-6 py-3 rounded text-xl"
           >
             Prev
           </button>
@@ -536,7 +605,7 @@ export default function Exam() {
           {current === questions.length - 1 ? (
             <button
               onClick={() => setSubmitted(true)}
-              className="bg-green-600 px-7 py-4 text-xl rounded"
+              className="bg-green-600 px-6 py-3 rounded text-xl"
             >
               Submit
             </button>
@@ -547,20 +616,13 @@ export default function Exam() {
                   Math.min(p + 1, questions.length - 1)
                 )
               }
-              className="bg-blue-600 px-7 py-4 text-xl rounded"
+              className="bg-blue-600 px-6 py-3 rounded text-xl"
             >
               Next
             </button>
           )}
         </div>
-
-        {/* SCORE */}
-        {submitted && (
-          <div className="mt-10 text-center text-3xl font-bold">
-            Score: {score} / {questions.length}
-          </div>
-        )}
       </div>
     </div>
   );
-}
+  }
