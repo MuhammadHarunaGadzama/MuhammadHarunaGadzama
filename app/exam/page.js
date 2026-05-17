@@ -425,6 +425,7 @@ answer: "10000"
 }
 ];
 
+
 export default function Exam() {
   const [current, setCurrent] = useState(0);
   const [answers, setAnswers] = useState({});
@@ -444,6 +445,7 @@ export default function Exam() {
   };
 
   const selectAnswer = (val) => {
+    if (submitted) return;
     setAnswers((p) => ({ ...p, [current]: val }));
   };
 
@@ -452,83 +454,29 @@ export default function Exam() {
     0
   );
 
-  // =========================
-  // CORRECTION MODE (AFTER SUBMIT)
-  // =========================
-  if (submitted) {
-    return (
-      <div className="p-8 bg-black text-white min-h-screen">
-        <h1 className="text-5xl font-bold text-center mb-6">
-          Exam Correction
-        </h1>
+  const isAnswered = (i) => answers[i] !== undefined;
 
-        <h2 className="text-3xl text-center mb-10">
-          Score: {score} / {questions.length}
-        </h2>
-
-        {questions.map((q, i) => (
-          <div key={q.id} className="bg-zinc-800 p-6 rounded mb-6">
-            <h3 className="text-2xl font-bold mb-5">
-              {q.id}. {q.question}
-            </h3>
-
-            {q.options.map((opt, j) => {
-              const isCorrect = opt === q.answer;
-              const isWrongSelected =
-                answers[i] === opt && answers[i] !== q.answer;
-
-              return (
-                <div
-                  key={j}
-                  className={`p-4 mb-3 rounded text-xl
-                    ${
-                      isCorrect
-                        ? "bg-green-600"
-                        : isWrongSelected
-                        ? "bg-red-600"
-                        : "bg-zinc-700"
-                    }
-                  `}
-                >
-                  {String.fromCharCode(65 + j)}. {opt}
-                </div>
-              );
-            })}
-          </div>
-        ))}
-      </div>
-    );
-  }
-
-  // =========================
-  // EXAM MODE
-  // =========================
   return (
     <div className="flex min-h-screen bg-black text-white">
 
       {/* SIDEBAR */}
-      <div className="w-52 p-4 bg-zinc-900">
-        <h2 className="text-2xl font-bold mb-4 text-center">
+      <div className="w-56 p-4 bg-zinc-900">
+        <h2 className="text-2xl font-bold text-center mb-4">
           Questions
         </h2>
 
         <div className="grid grid-cols-3 gap-2">
-          {questions.map((q, i) => {
-            const answered = answers[i] !== undefined;
-
-            return (
-              <button
-                key={q.id}
-                onClick={() => setCurrent(i)}
-                className={`p-4 text-xl font-bold rounded
-                  ${answered ? "bg-green-600" : "bg-zinc-700"}
-                  ${current === i ? "border-2 border-white" : ""}
-                `}
-              >
-                {q.id}
-              </button>
-            );
-          })}
+          {questions.map((q, i) => (
+            <button
+              key={q.id}
+              onClick={() => setCurrent(i)}
+              className={`p-3 text-lg font-bold rounded ${
+                isAnswered(i) ? "bg-green-600" : "bg-zinc-700"
+              } ${current === i ? "border-2 border-white" : ""}`}
+            >
+              {q.id}
+            </button>
+          ))}
         </div>
       </div>
 
@@ -537,41 +485,50 @@ export default function Exam() {
 
         {/* TOP BAR */}
         <div className="flex justify-between mb-8">
-          <h1 className="text-5xl font-bold">CBT EXAM</h1>
+          <h1 className="text-4xl font-bold">CBT EXAM</h1>
 
-          <div className="bg-red-600 px-6 py-3 rounded text-2xl font-bold">
+          <div className="bg-red-600 px-5 py-3 text-2xl font-bold rounded">
             {formatTime()}
           </div>
         </div>
 
         {/* QUESTION */}
         <div className="bg-zinc-800 p-8 rounded">
-          <h2 className="text-4xl font-bold mb-8 leading-snug">
+          <h2 className="text-3xl font-bold mb-8">
             {questions[current].question}
           </h2>
 
-          {questions[current].options.map((opt, i) => (
-            <button
-              key={i}
-              onClick={() => selectAnswer(opt)}
-              className={`block w-full text-left p-6 mb-4 rounded text-2xl font-medium
-                ${
-                  answers[current] === opt
+          {questions[current].options.map((opt, i) => {
+            const correct = opt === questions[current].answer;
+            const selected = answers[current] === opt;
+
+            return (
+              <button
+                key={i}
+                onClick={() => selectAnswer(opt)}
+                className={`block w-full text-left p-5 mb-4 rounded text-2xl ${
+                  submitted
+                    ? correct
+                      ? "bg-green-600"
+                      : selected
+                      ? "bg-red-600"
+                      : "bg-zinc-700"
+                    : selected
                     ? "bg-green-600"
                     : "bg-zinc-700"
-                }
-              `}
-            >
-              {String.fromCharCode(65 + i)}. {opt}
-            </button>
-          ))}
+                }`}
+              >
+                {String.fromCharCode(65 + i)}. {opt}
+              </button>
+            );
+          })}
         </div>
 
         {/* CONTROLS */}
         <div className="flex justify-between mt-8">
           <button
             onClick={() => setCurrent((p) => Math.max(p - 1, 0))}
-            className="bg-gray-600 px-8 py-4 rounded text-xl font-bold"
+            className="bg-gray-600 px-7 py-4 text-xl rounded"
           >
             Prev
           </button>
@@ -579,7 +536,7 @@ export default function Exam() {
           {current === questions.length - 1 ? (
             <button
               onClick={() => setSubmitted(true)}
-              className="bg-green-600 px-8 py-4 rounded text-xl font-bold"
+              className="bg-green-600 px-7 py-4 text-xl rounded"
             >
               Submit
             </button>
@@ -590,14 +547,20 @@ export default function Exam() {
                   Math.min(p + 1, questions.length - 1)
                 )
               }
-              className="bg-blue-600 px-8 py-4 rounded text-xl font-bold"
+              className="bg-blue-600 px-7 py-4 text-xl rounded"
             >
               Next
             </button>
           )}
         </div>
+
+        {/* SCORE */}
+        {submitted && (
+          <div className="mt-10 text-center text-3xl font-bold">
+            Score: {score} / {questions.length}
+          </div>
+        )}
       </div>
     </div>
   );
-    }
-        
+}
